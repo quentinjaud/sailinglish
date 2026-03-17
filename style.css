@@ -188,6 +188,18 @@ header p {
   text-align: center;
 }
 
+.question-card.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+
 .question-label {
   font-size: 0.85rem;
   color: var(--text-muted);
@@ -235,6 +247,13 @@ header p {
   background: rgba(107,191,89,0.2);
   color: var(--green);
   font-weight: 700;
+  animation: correctPulse 0.6s ease-out;
+}
+
+@keyframes correctPulse {
+  0% { box-shadow: 0 0 0 0 rgba(107,191,89,0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(107,191,89,0); }
+  100% { box-shadow: 0 0 0 0 rgba(107,191,89,0); }
 }
 
 .option-btn.wrong {
@@ -280,7 +299,7 @@ header p {
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.5s;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .card.flipped { transform: rotateY(180deg); }
@@ -419,7 +438,13 @@ header p {
   background: rgba(107,191,89,0.15);
   color: var(--green);
   cursor: default;
-  opacity: 0.7;
+  animation: matchFade 0.4s ease-out forwards;
+}
+
+@keyframes matchFade {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 0.7; }
 }
 
 .match-card.wrong-flash {
@@ -527,6 +552,18 @@ header p {
   max-width: 100%;
 }
 
+.chart-container {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.chart-container canvas {
+  max-width: 100%;
+}
+
 .heatmap-container {
   background: var(--bg-card);
   border-radius: 12px;
@@ -616,6 +653,45 @@ header p {
 .srs-count.due { color: var(--sunflower); }
 .srs-count.learning { color: var(--red); }
 .srs-count.known { color: var(--green); }
+
+.btn-daily-review {
+  padding: 0.8rem 1rem;
+  background: rgba(107,191,89,0.15);
+  color: var(--green);
+  border: 2px solid rgba(107,191,89,0.3);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-daily-review:hover { background: rgba(107,191,89,0.25); }
+
+.review-badge {
+  background: var(--green);
+  color: var(--bg);
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.review-badge:empty { display: none; }
+
+.daily-review-msg {
+  text-align: center;
+  color: var(--green);
+  font-size: 0.85rem;
+  font-style: italic;
+}
 
 .btn-dashboard {
   padding: 0.7rem 1rem;
@@ -719,6 +795,38 @@ header p {
 }
 
 .hidden { display: none !important; }
+
+/* --- Confetti animation --- */
+.confetti-particle {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 999;
+  animation: confettiFall 0.8s ease-out forwards;
+}
+
+@keyframes confettiFall {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.5); }
+}
+
+/* --- Keyboard hints on quiz buttons --- */
+.option-btn { position: relative; }
+.option-btn::after {
+  content: attr(data-key);
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+@media (max-width: 480px) {
+  .option-btn::after { display: none; }
+}
 
 /* --- Responsive --- */
 @media (max-width: 480px) {

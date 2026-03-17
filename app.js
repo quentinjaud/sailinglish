@@ -316,6 +316,7 @@ async function login() {
   document.getElementById('menu').classList.remove('hidden');
   document.getElementById('userLabel').textContent = currentUser;
   updateMastery();
+  updateDailyReviewCount();
 }
 
 function logout() {
@@ -454,6 +455,7 @@ let answered = false;
 let flashcardDeck = [];
 let reviewDeck = [];
 let cardFlipped = false;
+let cardTransitioning = false;
 
 // Match state
 let matchItems = [];
@@ -518,6 +520,30 @@ function updateMastery() {
 function startGame() {
   currentData = DATA.filter(d => selectedCat === 'all' || d.cat === selectedCat);
   currentData = sortByWeakness(currentData);
+  launchGame(currentData);
+}
+
+function startDailyReview() {
+  const dueTerms = getTermsDueForReview();
+  if (dueTerms.length === 0) {
+    const msg = document.getElementById('dailyReviewMsg');
+    msg.classList.remove('hidden');
+    setTimeout(() => msg.classList.add('hidden'), 3000);
+    return;
+  }
+  selectedMode = 'quiz';
+  selectedCat = 'review';
+  currentData = sortByWeakness(dueTerms).slice(0, 30);
+  launchGame(currentData);
+}
+
+function updateDailyReviewCount() {
+  const count = getTermsDueForReview().length;
+  document.getElementById('dailyReviewCount').textContent = count > 0 ? count : '';
+}
+
+function launchGame(items) {
+  currentData = items;
   currentIndex = 0;
   goodCount = 0;
   badCount = 0;
@@ -574,9 +600,10 @@ function showQuestion() {
 
   const grid = document.getElementById('optionsGrid');
   grid.innerHTML = '';
-  options.forEach(opt => {
+  options.forEach((opt, i) => {
     const btn = document.createElement('button');
     btn.className = 'option-btn';
+    btn.dataset.key = i + 1;
     btn.textContent = opt;
     btn.onclick = () => answerQuiz(btn, opt, item.en);
     grid.appendChild(btn);
@@ -594,9 +621,13 @@ function answerQuiz(btn, selected, correct) {
   if (isCorrect) {
     goodCount++;
     btn.classList.add('correct');
+    spawnConfetti(btn);
   } else {
     badCount++;
     btn.classList.add('wrong');
+    const qCard = document.querySelector('.question-card');
+    qCard.classList.add('shake');
+    setTimeout(() => qCard.classList.remove('shake'), 400);
     document.querySelectorAll('.option-btn').forEach(b => {
       if (b.textContent === correct) b.classList.add('correct');
     });
@@ -626,32 +657,46 @@ function showFlashcard() {
     }
   }
 
+  const card = document.getElementById('flashcard');
+  const wasFlipped = cardFlipped;
   cardFlipped = false;
-  document.getElementById('flashcard').classList.remove('flipped');
+  cardTransitioning = true;
 
-  const item = flashcardDeck[0];
-  document.getElementById('cardFront').textContent = item.fr;
-  document.getElementById('cardBack').textContent = item.en;
+  function loadNextContent() {
+    const item = flashcardDeck[0];
+    document.getElementById('cardFront').textContent = item.fr;
+    document.getElementById('cardBack').textContent = item.en;
 
-  const hintEl = document.getElementById('cardHint');
-  if (item.hint) {
-    hintEl.textContent = item.hint;
-    hintEl.classList.remove('hidden');
-  } else {
-    hintEl.classList.add('hidden');
+    const hintEl = document.getElementById('cardHint');
+    if (item.hint) {
+      hintEl.textContent = item.hint;
+      hintEl.classList.remove('hidden');
+    } else {
+      hintEl.classList.add('hidden');
+    }
+
+    const remaining = flashcardDeck.length + reviewDeck.length;
+    document.getElementById('flashcardProgress').textContent =
+      `${goodCount} maîtrisé(s) · ${remaining} restante(s) · ${reviewDeck.length} à revoir`;
+    cardTransitioning = false;
   }
 
-  const remaining = flashcardDeck.length + reviewDeck.length;
-  document.getElementById('flashcardProgress').textContent =
-    `${goodCount} maîtrisé(s) · ${remaining} restante(s) · ${reviewDeck.length} à revoir`;
+  if (wasFlipped) {
+    card.classList.remove('flipped');
+    setTimeout(loadNextContent, 520);
+  } else {
+    loadNextContent();
+  }
 }
 
 function flipCard() {
+  if (cardTransitioning) return;
   cardFlipped = !cardFlipped;
   document.getElementById('flashcard').classList.toggle('flipped', cardFlipped);
 }
 
 function flashcardAnswer(knew) {
+  if (cardTransitioning) return;
   const item = flashcardDeck.shift();
   if (knew) {
     goodCount++;
@@ -796,6 +841,7 @@ function backToMenu() {
   document.getElementById('endScreen').classList.add('hidden');
   document.getElementById('menu').classList.remove('hidden');
   updateMastery();
+  updateDailyReviewCount();
 }
 
 // ===================== DASHBOARD =====================
@@ -809,6 +855,7 @@ function closeDashboard() {
   document.getElementById('dashboard').classList.add('hidden');
   document.getElementById('menu').classList.remove('hidden');
   updateMastery();
+  updateDailyReviewCount();
 }
 
 function renderDashboard() {
@@ -842,6 +889,9 @@ function renderDashboard() {
 
   // Heatmap
   drawHeatmap();
+
+  // Progress curve
+  drawProgressCurve();
 
   // Session list
   renderSessionList();
@@ -984,6 +1034,124 @@ function drawHeatmap() {
   }
 }
 
+function drawProgressCurve() {
+  const canvas = document.getElementById('progressCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Collect mastered terms with their lastSeen date
+  const masteredByDate = [];
+  Object.entries(progressCache.terms).forEach(([, p]) => {
+    if (p && p.correct >= 3 && p.correct > p.wrong && p.lastSeen) {
+      masteredByDate.push(p.lastSeen);
+    }
+  });
+
+  if (masteredByDate.length === 0) {
+    ctx.fillStyle = '#9e9590';
+    ctx.font = '14px Atkinson Hyperlegible Next, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Pas encore de données', W / 2, H / 2);
+    return;
+  }
+
+  // Sort by date, build cumulative curve
+  masteredByDate.sort((a, b) => a - b);
+  const dayMs = 86400000;
+  const dateKey = ts => new Date(ts).toISOString().slice(0, 10);
+
+  // Group by day
+  const dayMap = {};
+  masteredByDate.forEach((ts, i) => {
+    const key = dateKey(ts);
+    dayMap[key] = i + 1; // cumulative count
+  });
+
+  const days = Object.keys(dayMap).sort();
+  const points = days.map(d => ({ date: d, count: dayMap[d] }));
+
+  // Chart margins
+  const ml = 40, mr = 15, mt = 15, mb = 30;
+  const cw = W - ml - mr;
+  const ch = H - mt - mb;
+  const maxCount = points[points.length - 1].count;
+  const yMax = Math.ceil(maxCount / 5) * 5 || 5;
+
+  // X positions
+  const xStep = points.length > 1 ? cw / (points.length - 1) : 0;
+
+  // Draw grid lines
+  ctx.strokeStyle = 'rgba(158,149,144,0.2)';
+  ctx.lineWidth = 1;
+  const gridLines = 4;
+  for (let i = 0; i <= gridLines; i++) {
+    const y = mt + ch - (i / gridLines) * ch;
+    ctx.beginPath();
+    ctx.moveTo(ml, y);
+    ctx.lineTo(W - mr, y);
+    ctx.stroke();
+
+    // Y-axis labels
+    ctx.fillStyle = '#9e9590';
+    ctx.font = '10px Atkinson Hyperlegible Next, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(Math.round((i / gridLines) * yMax), ml - 6, y + 3);
+  }
+
+  // Draw area + line
+  ctx.beginPath();
+  points.forEach((p, i) => {
+    const x = ml + (points.length > 1 ? i * xStep : cw / 2);
+    const y = mt + ch - (p.count / yMax) * ch;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+
+  // Fill area
+  const lastX = ml + (points.length > 1 ? (points.length - 1) * xStep : cw / 2);
+  const firstX = ml + (points.length > 1 ? 0 : cw / 2);
+  ctx.lineTo(lastX, mt + ch);
+  ctx.lineTo(firstX, mt + ch);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(242, 193, 46, 0.15)';
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  points.forEach((p, i) => {
+    const x = ml + (points.length > 1 ? i * xStep : cw / 2);
+    const y = mt + ch - (p.count / yMax) * ch;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = '#f2c12e';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Dots
+  ctx.fillStyle = '#f2c12e';
+  points.forEach((p, i) => {
+    const x = ml + (points.length > 1 ? i * xStep : cw / 2);
+    const y = mt + ch - (p.count / yMax) * ch;
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // X-axis date labels (show max ~6 labels to avoid overlap)
+  ctx.fillStyle = '#9e9590';
+  ctx.font = '10px Atkinson Hyperlegible Next, sans-serif';
+  ctx.textAlign = 'center';
+  const labelStep = Math.max(1, Math.floor(points.length / 6));
+  points.forEach((p, i) => {
+    if (i % labelStep === 0 || i === points.length - 1) {
+      const x = ml + (points.length > 1 ? i * xStep : cw / 2);
+      const d = new Date(p.date + 'T00:00:00');
+      const label = d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+      ctx.fillText(label, x, H - 8);
+    }
+  });
+}
+
 function renderSessionList() {
   const container = document.getElementById('sessionList');
   container.innerHTML = '';
@@ -1005,7 +1173,7 @@ function renderSessionList() {
     const date = new Date(s.date);
     const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
     const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    const catLabel = CATEGORIES[s.cat] ? CATEGORIES[s.cat].label : s.cat;
+    const catLabel = s.cat === 'review' ? 'Révision' : (CATEGORIES[s.cat] ? CATEGORIES[s.cat].label : s.cat);
     const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
     const duration = s.duration ? `${Math.floor(s.duration / 60)}m${String(s.duration % 60).padStart(2, '0')}s` : '';
 
@@ -1018,6 +1186,67 @@ function renderSessionList() {
     `;
     container.appendChild(div);
   });
+}
+
+// ===================== CONFETTI =====================
+function spawnConfetti(anchorEl) {
+  const rect = anchorEl.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const colors = ['#f2c12e', '#6bbf59', '#e05a4f', '#4fc3f7', '#ab47bc'];
+  for (let i = 0; i < 12; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-particle';
+    el.style.left = cx + 'px';
+    el.style.top = cy + 'px';
+    el.style.background = colors[i % colors.length];
+    el.style.setProperty('--dx', (Math.random() - 0.5) * 160 + 'px');
+    el.style.setProperty('--dy', (Math.random() - 0.5) * 160 + 'px');
+    el.style.setProperty('--rot', Math.random() * 720 - 360 + 'deg');
+    document.body.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+// ===================== KEYBOARD SHORTCUTS =====================
+document.addEventListener('keydown', handleKeyboard);
+
+function handleKeyboard(e) {
+  // Only act when game screen is visible
+  if (document.getElementById('game').classList.contains('hidden')) return;
+
+  // Quiz mode
+  if (!document.getElementById('quizArea').classList.contains('hidden')) {
+    handleQuizKeys(e);
+  }
+  // Flashcard mode
+  else if (!document.getElementById('flashcardArea').classList.contains('hidden')) {
+    handleFlashcardKeys(e);
+  }
+}
+
+function handleQuizKeys(e) {
+  const key = e.key;
+  if (!answered && key >= '1' && key <= '4') {
+    const btns = document.querySelectorAll('#optionsGrid .option-btn');
+    const idx = parseInt(key) - 1;
+    if (btns[idx]) btns[idx].click();
+  } else if (answered && (key === 'Enter' || key === ' ')) {
+    e.preventDefault();
+    nextQuestion();
+  }
+}
+
+function handleFlashcardKeys(e) {
+  const key = e.key;
+  if (key === ' ') {
+    e.preventDefault();
+    flipCard();
+  } else if (cardFlipped && key === 'ArrowRight') {
+    flashcardAnswer(true);
+  } else if (cardFlipped && key === 'ArrowLeft') {
+    flashcardAnswer(false);
+  }
 }
 
 // ===================== UTILS =====================

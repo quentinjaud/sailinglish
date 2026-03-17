@@ -49,6 +49,10 @@
       <div class="mastery-track"><div class="mastery-fill" id="masteryFill" style="width:0%"></div></div>
     </div>
     <button class="btn-start" id="startBtn" disabled onclick="startGame()">Commencer</button>
+    <button class="btn-daily-review" id="dailyReviewBtn" onclick="startDailyReview()">
+      Revision du jour <span class="review-badge" id="dailyReviewCount"></span>
+    </button>
+    <p class="daily-review-msg hidden" id="dailyReviewMsg">Rien à revoir aujourd'hui !</p>
     <button class="btn-dashboard" onclick="showDashboard()">Tableau de bord</button>
   </div>
 
@@ -112,6 +116,13 @@
           <div class="heatmap-cell l4"></div>
           <span>Plus</span>
         </div>
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <h3>Courbe de progression</h3>
+      <div class="chart-container">
+        <canvas id="progressCanvas" width="500" height="200"></canvas>
       </div>
     </div>
 
