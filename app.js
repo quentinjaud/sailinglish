@@ -252,6 +252,7 @@ function ensureProgressStructure() {
     };
   }
   if (!progressCache.sessions) progressCache.sessions = [];
+  if (typeof progressCache.notes !== 'string') progressCache.notes = '';
   if (!progressCache.streak) progressCache.streak = { current: 0, best: 0, lastDate: null };
 }
 
@@ -905,6 +906,19 @@ function renderDashboard() {
 
   // Session list
   renderSessionList();
+
+  // Notes
+  document.getElementById('userNotes').value = progressCache.notes || '';
+}
+
+function saveNotes() {
+  ensureProgressStructure();
+  progressCache.notes = document.getElementById('userNotes').value;
+  saveProgressToServer();
+
+  const btn = document.getElementById('notesSaveBtn');
+  btn.classList.add('saved');
+  setTimeout(() => btn.classList.remove('saved'), 600);
 }
 
 function drawRadarChart() {
