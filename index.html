@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sailinglish — Apprends la voile en anglais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Sailinglish</h1>
+  <p>Apprends le vocabulaire de la voile en anglais</p>
+</header>
+
+<div class="container">
+  <!-- LOGIN -->
+  <div id="loginScreen" class="login-screen">
+    <p>Entre ton pseudo pour sauvegarder ta progression</p>
+    <input class="login-input" id="loginInput" type="text" placeholder="Ton pseudo" maxlength="20" autofocus>
+    <button class="btn-start" id="loginBtn" onclick="login()">C'est parti</button>
+    <p class="existing-label hidden" id="existingLabel">ou reprends ta session :</p>
+    <div class="existing-users" id="existingUsers"></div>
+  </div>
+
+  <!-- MENU -->
+  <div id="menu" class="menu hidden">
+    <div class="user-badge" id="userBadge">
+      <span id="userLabel"></span>
+      <button onclick="logout()">changer</button>
+    </div>
+    <div class="menu-section">
+      <h2>Mode</h2>
+      <div class="btn-group">
+        <button class="btn" data-mode="quiz" onclick="selectMode('quiz')">Quiz</button>
+        <button class="btn" data-mode="flashcard" onclick="selectMode('flashcard')">Flashcards</button>
+        <button class="btn" data-mode="match" onclick="selectMode('match')">Match</button>
+      </div>
+    </div>
+    <div class="menu-section">
+      <h2>Catégorie</h2>
+      <div class="cat-chips" id="catChips"></div>
+    </div>
+    <div id="masterySection" class="mastery-bar hidden">
+      <span class="mastery-label" id="masteryLabel">0 %</span>
+      <div class="mastery-track"><div class="mastery-fill" id="masteryFill" style="width:0%"></div></div>
+    </div>
+    <button class="btn-start" id="startBtn" disabled onclick="startGame()">Commencer</button>
+    <button class="btn-dashboard" onclick="showDashboard()">Tableau de bord</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="dashboard hidden">
+    <div class="dash-header">
+      <h2>Tableau de bord</h2>
+      <button class="dash-back" onclick="closeDashboard()">← Retour</button>
+    </div>
+
+    <div class="dash-stats">
+      <div class="stat-card">
+        <div class="stat-value" id="dashMastered">0</div>
+        <div class="stat-label">Termes maîtrisés</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="dashStreak">0</div>
+        <div class="stat-label">Jours de suite</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="dashSessions">0</div>
+        <div class="stat-label">Sessions jouées</div>
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <h3>Révision espacée</h3>
+      <div class="srs-info">
+        <div>
+          <div class="srs-count due" id="srsDue">0</div>
+          <div class="stat-label">À revoir</div>
+        </div>
+        <div>
+          <div class="srs-count learning" id="srsLearning">0</div>
+          <div class="stat-label">En cours</div>
+        </div>
+        <div>
+          <div class="srs-count known" id="srsKnown">0</div>
+          <div class="stat-label">Acquis</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <h3>Maîtrise par catégorie</h3>
+      <div class="radar-container">
+        <canvas id="radarCanvas" width="300" height="300"></canvas>
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <h3>Activité (12 dernières semaines)</h3>
+      <div class="heatmap-container">
+        <div class="heatmap-grid" id="heatmapGrid"></div>
+        <div class="heatmap-legend">
+          <span>Moins</span>
+          <div class="heatmap-cell"></div>
+          <div class="heatmap-cell l1"></div>
+          <div class="heatmap-cell l2"></div>
+          <div class="heatmap-cell l3"></div>
+          <div class="heatmap-cell l4"></div>
+          <span>Plus</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <h3>Dernières sessions</h3>
+      <div class="session-list" id="sessionList"></div>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div id="game" class="hidden">
+    <div class="score-bar">
+      <button class="back-btn" onclick="backToMenu()" title="Retour au menu">&#x2190;</button>
+      <div class="score">
+        <span class="good" id="goodScore">0</span>
+        <span class="bad" id="badScore">0</span>
+        <span class="total" id="totalScore">0 / 0</span>
+      </div>
+    </div>
+
+    <!-- Quiz mode -->
+    <div id="quizArea" class="quiz-area hidden">
+      <div class="question-card">
+        <div class="question-label">Comment dit-on en anglais :</div>
+        <div class="question-text" id="questionText"></div>
+        <div class="question-hint hidden" id="questionHint"></div>
+      </div>
+      <div class="options" id="optionsGrid"></div>
+      <button class="next-btn hidden" id="nextBtn" onclick="nextQuestion()">Question suivante</button>
+    </div>
+
+    <!-- Flashcard mode -->
+    <div id="flashcardArea" class="flashcard-area hidden">
+      <div class="card-container" onclick="flipCard()">
+        <div class="card" id="flashcard">
+          <div class="card-face card-front">
+            <div class="label">Français</div>
+            <div class="term" id="cardFront"></div>
+          </div>
+          <div class="card-face card-back">
+            <div class="label">English</div>
+            <div class="term" id="cardBack"></div>
+            <div class="hint hidden" id="cardHint"></div>
+          </div>
+        </div>
+      </div>
+      <p class="card-tap-hint">Clique pour retourner la carte</p>
+      <div class="flashcard-btns">
+        <button class="btn-knew" onclick="flashcardAnswer(true)">Je savais</button>
+        <button class="btn-review" onclick="flashcardAnswer(false)">À revoir</button>
+      </div>
+      <p class="progress-text" id="flashcardProgress"></p>
+    </div>
+
+    <!-- Match mode -->
+    <div id="matchArea" class="match-area hidden">
+      <p class="match-round-info" id="matchInfo"></p>
+      <div class="match-grid">
+        <div class="match-col" id="matchColFr"></div>
+        <div class="match-col" id="matchColEn"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- END -->
+  <div id="endScreen" class="end-screen hidden">
+    <h2>Session terminée !</h2>
+    <div class="stats" id="endStats"></div>
+    <button class="btn-start" onclick="backToMenu()">Rejouer</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
