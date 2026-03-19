@@ -23,7 +23,7 @@
 - [ ] **Classement** : leaderboard entre utilisateurs
 
 ## 5. Amélioration des modes de jeu
-- [ ] **Mode écriture** : taper la réponse au clavier (pas de QCM)
+- [x] **Mode écriture** : taper la réponse au clavier (pas de QCM)
 - [ ] **Mode audio** : écouter la prononciation anglaise (Web Speech API)
 - [ ] **Difficulté adaptative** : ajuster le nombre de distracteurs selon le niveau
 - [ ] **Timer** : mode chronométré pour augmenter le challenge
