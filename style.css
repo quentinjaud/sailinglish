@@ -1,19 +1,19 @@
 :root {
-  --bg: #2c2926;
-  --bg-card: #3a3632;
-  --bg-hover: #474240;
-  --text: #f0ebe4;
-  --text-muted: #9e9590;
-  --sunflower: #f2c12e;
-  --sunflower-dark: #d4a520;
-  --green: #6bbf59;
-  --red: #e05a4f;
+  --bg: #faf8f3;
+  --bg-card: #ffffff;
+  --bg-hover: #f0ede5;
+  --text: #2d2a26;
+  --text-muted: #8a8279;
+  --sunflower: #d4a373;
+  --sunflower-dark: #b8864f;
+  --green: #6a994e;
+  --red: #bc4749;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: 'Atkinson Hyperlegible Next', sans-serif;
+  font-family: 'Source Serif 4', serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -31,6 +31,8 @@ header h1 {
   font-size: 2.2rem;
   color: var(--sunflower);
   font-weight: 700;
+  letter-spacing: 3px;
+  font-variant: small-caps;
 }
 
 header p {
@@ -186,6 +188,7 @@ header p {
   border-radius: 14px;
   padding: 2rem 1.5rem;
   text-align: center;
+  border: 1px solid #d5cfc3;
 }
 
 .question-card.shake {
@@ -316,6 +319,7 @@ header p {
   justify-content: center;
   padding: 2rem;
   text-align: center;
+  border: 1px solid #d5cfc3;
 }
 
 .card-front {
@@ -323,7 +327,7 @@ header p {
 }
 
 .card-back {
-  background: #3d3830;
+  background: #f7f3eb;
   transform: rotateY(180deg);
 }
 
@@ -601,6 +605,7 @@ header p {
   border-radius: 12px;
   padding: 1rem 0.6rem;
   text-align: center;
+  border: 1px solid #d5cfc3;
 }
 
 .stat-value {
@@ -630,6 +635,7 @@ header p {
   padding: 1rem;
   display: flex;
   justify-content: center;
+  border: 1px solid #d5cfc3;
 }
 
 .radar-container canvas {
@@ -642,6 +648,7 @@ header p {
   padding: 1rem;
   display: flex;
   justify-content: center;
+  border: 1px solid #d5cfc3;
 }
 
 .chart-container canvas {
@@ -653,6 +660,7 @@ header p {
   border-radius: 12px;
   padding: 1rem;
   overflow-x: auto;
+  border: 1px solid #d5cfc3;
 }
 
 .heatmap-grid {
@@ -674,9 +682,9 @@ header p {
   background: var(--bg-hover);
 }
 
-.heatmap-cell.l1 { background: rgba(242, 193, 46, 0.25); }
-.heatmap-cell.l2 { background: rgba(242, 193, 46, 0.5); }
-.heatmap-cell.l3 { background: rgba(242, 193, 46, 0.75); }
+.heatmap-cell.l1 { background: rgba(212, 163, 115, 0.2); }
+.heatmap-cell.l2 { background: rgba(212, 163, 115, 0.4); }
+.heatmap-cell.l3 { background: rgba(212, 163, 115, 0.65); }
 .heatmap-cell.l4 { background: var(--sunflower); }
 
 .heatmap-legend {
@@ -708,6 +716,7 @@ header p {
   justify-content: space-between;
   align-items: center;
   font-size: 0.85rem;
+  border: 1px solid #d5cfc3;
 }
 
 .session-meta {
@@ -727,6 +736,7 @@ header p {
   gap: 1rem;
   justify-content: space-around;
   text-align: center;
+  border: 1px solid #d5cfc3;
 }
 
 .srs-count {
@@ -892,11 +902,11 @@ header p {
   min-height: 150px;
   padding: 1rem;
   padding-bottom: 3rem;
-  background: #1e1c1a;
-  color: #c8c2b8;
-  border: 1px solid var(--bg-hover);
+  background: #f7f3eb;
+  color: #2d2a26;
+  border: 1px solid #d5cfc3;
   border-radius: 12px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Source Serif 4', serif;
   font-size: 0.85rem;
   line-height: 1.6;
   resize: vertical;
