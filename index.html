@@ -35,10 +35,11 @@
     <div class="menu-section">
       <h2>Mode</h2>
       <div class="btn-group">
-        <button class="btn" data-mode="quiz" onclick="selectMode('quiz')">Quiz</button>
         <button class="btn" data-mode="flashcard" onclick="selectMode('flashcard')">Flashcards</button>
+        <button class="btn" data-mode="quiz" onclick="selectMode('quiz')">Quiz</button>
         <button class="btn" data-mode="match" onclick="selectMode('match')">Match</button>
         <button class="btn" data-mode="write" onclick="selectMode('write')">Écriture</button>
+        <button class="btn" data-mode="phrases" onclick="selectMode('phrases')">Phrases</button>
       </div>
     </div>
     <div class="menu-section">
@@ -198,7 +199,7 @@
     <!-- Write mode -->
     <div id="writeArea" class="write-area hidden">
       <div class="question-card" id="writeQuestionCard">
-        <div class="question-label">Comment dit-on en anglais :</div>
+        <div class="question-label" id="writeLabel">Comment dit-on en anglais :</div>
         <div class="question-text" id="writeQuestionText"></div>
         <div class="question-hint hidden" id="writeQuestionHint"></div>
       </div>

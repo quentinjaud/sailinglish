@@ -210,6 +210,65 @@ const DATA = [
   { fr: "Largue tout !", en: "Let everything go!", cat: "commands", hint: "Lâcher toutes les écoutes (urgence)" },
 ];
 
+// ===================== PHRASES (instructor sentences) =====================
+const PHRASES = [
+  // --- Départ / préparation ---
+  { fr: "On va commencer par hisser la grand-voile, tenez-vous prêts.", en: "We'll start by hoisting the mainsail, stand by.", cat: "depart", keywords: ["hoisting", "mainsail", "stand by"] },
+  { fr: "Vérifiez que les pare-battages sont bien en place avant d'appareiller.", en: "Check that the fenders are properly in place before casting off.", cat: "depart", keywords: ["fenders", "casting off"] },
+  { fr: "Larguez les amarres avant et arrière.", en: "Cast off the bow and stern lines.", cat: "depart", keywords: ["cast off", "bow", "stern"] },
+  { fr: "Tout le monde met son gilet de sauvetage avant de sortir du port.", en: "Everyone puts on a life jacket before leaving the harbour.", cat: "depart", keywords: ["life jacket", "harbour"] },
+  { fr: "On va border le foc dès qu'on aura passé la bouée verte.", en: "We'll trim the jib as soon as we've passed the green buoy.", cat: "depart", keywords: ["trim", "jib", "buoy"] },
+
+  // --- Navigation / allures ---
+  { fr: "On est au près serré, il faut border davantage l'écoute de grand-voile.", en: "We're close-hauled, we need to trim the mainsheet more.", cat: "nav", keywords: ["close-hauled", "trim", "mainsheet"] },
+  { fr: "Le vent a tourné, on peut abattre un peu pour passer au largue.", en: "The wind has shifted, we can bear away a bit to go on a broad reach.", cat: "nav", keywords: ["wind", "bear away", "broad reach"] },
+  { fr: "Attention, le vent vient de tribord, on est tribord amures.", en: "Careful, the wind is coming from starboard, we're on starboard tack.", cat: "nav", keywords: ["starboard", "tack"] },
+  { fr: "On va longer la côte au travers avant de remonter au vent.", en: "We'll sail along the coast on a beam reach before beating to windward.", cat: "nav", keywords: ["beam reach", "beating", "windward"] },
+  { fr: "Tiens ton cap au 270, on fait route vers le phare.", en: "Hold your course at 270, we're heading for the lighthouse.", cat: "nav", keywords: ["course", "270", "lighthouse"] },
+
+  // --- Manoeuvres ---
+  { fr: "Paré à virer ! On vire dans 5 secondes.", en: "Ready about! We're tacking in 5 seconds.", cat: "manoeuvre", keywords: ["ready about", "tacking"] },
+  { fr: "On va empanner, faites attention à la bôme.", en: "We're going to jibe, watch out for the boom.", cat: "manoeuvre", keywords: ["jibe", "boom"] },
+  { fr: "Choque l'écoute de foc et borde de l'autre côté après le virement.", en: "Ease the jib sheet and trim on the other side after the tack.", cat: "manoeuvre", keywords: ["ease", "jib sheet", "trim", "tack"] },
+  { fr: "Le vent forcit, on va prendre un ris dans la grand-voile.", en: "The wind is picking up, we're going to reef the mainsail.", cat: "manoeuvre", keywords: ["wind", "reef", "mainsail"] },
+  { fr: "Affale la grand-voile doucement, en contrôlant la drisse.", en: "Lower the mainsail gently, controlling the halyard.", cat: "manoeuvre", keywords: ["lower", "mainsail", "halyard"] },
+  { fr: "Il faut se mettre à la cape, le grain arrive.", en: "We need to heave to, the squall is coming.", cat: "manoeuvre", keywords: ["heave to", "squall"] },
+
+  // --- Réglages ---
+  { fr: "La voile faseye, il faut border un peu.", en: "The sail is luffing, you need to trim a bit.", cat: "reglage", keywords: ["luffing", "trim"] },
+  { fr: "Choque deux mains d'écoute de grand-voile.", en: "Ease two hands of mainsheet.", cat: "reglage", keywords: ["ease", "mainsheet"] },
+  { fr: "Reprends du cunningham, le creux est trop reculé.", en: "Take up some cunningham, the draft is too far aft.", cat: "reglage", keywords: ["cunningham", "draft", "aft"] },
+  { fr: "Étarque la drisse de foc, il y a des plis dans le guindant.", en: "Tension the jib halyard, there are creases in the luff.", cat: "reglage", keywords: ["jib halyard", "luff"] },
+
+  // --- Mouillage / port ---
+  { fr: "On va mouiller ici, prépare l'ancre et la chaîne.", en: "We're going to anchor here, prepare the anchor and chain.", cat: "mouillage", keywords: ["anchor", "chain"] },
+  { fr: "Donne assez de chaîne, il faut trois fois la profondeur.", en: "Pay out enough chain, you need three times the depth.", cat: "mouillage", keywords: ["chain", "three", "depth"] },
+  { fr: "Mettez les pare-battages à tribord, on va s'amarrer à couple.", en: "Put the fenders on starboard, we're going to raft up.", cat: "mouillage", keywords: ["fenders", "starboard", "raft up"] },
+  { fr: "Lance l'amarre au gars sur le ponton.", en: "Throw the mooring line to the guy on the pontoon.", cat: "mouillage", keywords: ["mooring line", "pontoon"] },
+
+  // --- Sécurité / urgence ---
+  { fr: "Homme à la mer ! Quelqu'un le montre du doigt en permanence.", en: "Man overboard! Someone keep pointing at them at all times.", cat: "securite", keywords: ["man overboard", "pointing"] },
+  { fr: "On va faire un MOB, tout le monde à son poste.", en: "We're going to do a MOB drill, everyone to your stations.", cat: "securite", keywords: ["mob", "drill", "stations"] },
+  { fr: "Accrochez votre harnais à la ligne de vie si vous montez sur le pont.", en: "Clip your harness to the jackline if you go on deck.", cat: "securite", keywords: ["harness", "jackline", "deck"] },
+  { fr: "Vérifiez que les fusées de détresse ne sont pas périmées.", en: "Check that the distress flares are not expired.", cat: "securite", keywords: ["distress flares", "expired"] },
+
+  // --- Météo / conditions ---
+  { fr: "Le baromètre chute, on va rentrer au port.", en: "The barometer is dropping, we're heading back to port.", cat: "meteo", keywords: ["barometer", "dropping", "port"] },
+  { fr: "La marée descend, attention aux hauts-fonds dans le chenal.", en: "The tide is going out, watch out for the shallows in the channel.", cat: "meteo", keywords: ["tide", "shallows", "channel"] },
+  { fr: "Il y a du courant de marée, on va dériver sous le vent.", en: "There's a tidal current, we're going to drift to leeward.", cat: "meteo", keywords: ["tidal current", "drift", "leeward"] },
+];
+
+const PHRASE_CATEGORIES = {
+  all:       { label: "Toutes" },
+  depart:    { label: "Départ" },
+  nav:       { label: "Navigation" },
+  manoeuvre: { label: "Manœuvres" },
+  reglage:   { label: "Réglages" },
+  mouillage: { label: "Mouillage" },
+  securite:  { label: "Sécurité" },
+  meteo:     { label: "Météo" },
+};
+
 const MAX_QUIZ_SIZE = 20;
 
 // Category metadata
@@ -407,7 +466,8 @@ function recordSession(mode, cat, correct, wrong, total) {
 
 function getMastery(filterCat) {
   ensureProgressStructure();
-  const items = filterCat === 'all' ? DATA : DATA.filter(d => d.cat === filterCat);
+  const source = selectedMode === 'phrases' ? PHRASES : DATA;
+  const items = filterCat === 'all' ? source : source.filter(d => d.cat === filterCat);
   if (items.length === 0) return 0;
   let mastered = 0;
   items.forEach(item => {
@@ -471,15 +531,17 @@ let matchPairsLeft = 0;
 let writeAnswered = false;
 
 // ===================== INIT =====================
-function initCatChips() {
+function initCatChips(forPhrases) {
   const container = document.getElementById('catChips');
   container.innerHTML = '';
-  Object.keys(CATEGORIES).forEach(key => {
+  const cats = forPhrases ? PHRASE_CATEGORIES : CATEGORIES;
+  const source = forPhrases ? PHRASES : DATA;
+  Object.keys(cats).forEach(key => {
     const btn = document.createElement('button');
     btn.className = 'btn';
     btn.dataset.cat = key;
-    const count = key === 'all' ? DATA.length : DATA.filter(d => d.cat === key).length;
-    btn.textContent = `${CATEGORIES[key].label} (${count})`;
+    const count = key === 'all' ? source.length : source.filter(d => d.cat === key).length;
+    btn.textContent = `${cats[key].label} (${count})`;
     btn.onclick = () => selectCategory(key);
     container.appendChild(btn);
   });
@@ -497,8 +559,15 @@ autoLogin();
 
 // ===================== MENU =====================
 function selectMode(mode) {
+  const wasPhrases = selectedMode === 'phrases';
+  const isPhrases = mode === 'phrases';
   selectedMode = mode;
   document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  if (wasPhrases !== isPhrases) {
+    selectedCat = null;
+    initCatChips(isPhrases);
+    updateMastery();
+  }
   updateStartBtn();
 }
 
@@ -524,9 +593,15 @@ function updateMastery() {
 
 // ===================== GAME START =====================
 function startGame() {
-  currentData = DATA.filter(d => selectedCat === 'all' || d.cat === selectedCat);
-  currentData = sortByWeakness(currentData).slice(0, MAX_QUIZ_SIZE);
-  launchGame(currentData);
+  if (selectedMode === 'phrases') {
+    currentData = PHRASES.filter(d => selectedCat === 'all' || d.cat === selectedCat);
+    shuffle(currentData);
+    launchGame(currentData);
+  } else {
+    currentData = DATA.filter(d => selectedCat === 'all' || d.cat === selectedCat);
+    currentData = sortByWeakness(currentData).slice(0, MAX_QUIZ_SIZE);
+    launchGame(currentData);
+  }
 }
 
 function startDailyReview() {
@@ -581,6 +656,11 @@ function launchGame(items) {
     startMatchRound();
   } else if (selectedMode === 'write') {
     document.getElementById('writeArea').classList.remove('hidden');
+    document.getElementById('writeLabel').textContent = 'Comment dit-on en anglais :';
+    showWriteQuestion();
+  } else if (selectedMode === 'phrases') {
+    document.getElementById('writeArea').classList.remove('hidden');
+    document.getElementById('writeLabel').textContent = 'Traduis cette consigne :';
     showWriteQuestion();
   }
 }
@@ -1197,7 +1277,7 @@ function renderSessionList() {
     return;
   }
 
-  const modeLabels = { quiz: 'Quiz', flashcard: 'Flashcards', match: 'Match' };
+  const modeLabels = { quiz: 'Quiz', flashcard: 'Flashcards', match: 'Match', write: 'Écriture', phrases: 'Phrases' };
 
   sessions.forEach(s => {
     const div = document.createElement('div');
@@ -1206,7 +1286,7 @@ function renderSessionList() {
     const date = new Date(s.date);
     const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
     const timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-    const catLabel = s.cat === 'review' ? 'Révision' : (CATEGORIES[s.cat] ? CATEGORIES[s.cat].label : s.cat);
+    const catLabel = s.cat === 'review' ? 'Révision' : (CATEGORIES[s.cat] ? CATEGORIES[s.cat].label : (PHRASE_CATEGORIES[s.cat] ? PHRASE_CATEGORIES[s.cat].label : s.cat));
     const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
     const duration = s.duration ? `${Math.floor(s.duration / 60)}m${String(s.duration % 60).padStart(2, '0')}s` : '';
 
@@ -1266,23 +1346,81 @@ function levenshtein(a, b) {
   return dp[m][n];
 }
 
-function checkWriteAnswer(userInput, correctEn) {
+function checkWriteAnswer(userInput, correctEn, item) {
   const userNorm = normalizeAnswer(userInput);
   const alternatives = correctEn.split(' / ').map(s => s.trim());
 
+  // Pass 1: exact match after normalization
   for (const alt of alternatives) {
     const altNorm = normalizeAnswer(alt);
     if (userNorm === altNorm) return { status: 'correct', accepted: alt };
   }
 
+  // Pass 2: Levenshtein on full string (typos)
   for (const alt of alternatives) {
     const altNorm = normalizeAnswer(alt);
     const dist = levenshtein(userNorm, altNorm);
-    const maxDist = altNorm.length <= 5 ? 1 : 2;
+    const maxDist = altNorm.length <= 5 ? 1 : altNorm.length <= 20 ? 2 : Math.min(Math.floor(altNorm.length * 0.15), 6);
     if (dist <= maxDist) return { status: 'almost', accepted: alt };
   }
 
+  // Pass 3: keywords check (phrases with keywords field)
+  if (item && item.keywords) {
+    const userCompact = userNorm.replace(/\s+/g, '');
+    const found = item.keywords.filter(kw => {
+      const kwNorm = normalizeAnswer(kw);
+      // Check both normal and compacted (lifejacket vs life jacket)
+      if (userNorm.includes(kwNorm)) return true;
+      if (userCompact.includes(kwNorm.replace(/\s+/g, ''))) return true;
+      // Fuzzy: check each keyword word individually
+      const kwWords = kwNorm.split(' ');
+      return kwWords.every(w => userNorm.split(' ').some(uw => levenshtein(uw, w) <= 1));
+    });
+    if (found.length === item.keywords.length) return { status: 'almost', accepted: correctEn };
+  }
+
+  // Pass 4: word-by-word fuzzy matching (for longer texts)
+  if (userNorm.length > 15) {
+    const best = wordMatchScore(userNorm, alternatives);
+    if (best.score >= 0.6) return { status: 'almost', accepted: best.accepted };
+  }
+
   return { status: 'wrong' };
+}
+
+function wordMatchScore(userNorm, alternatives) {
+  const STOP_WORDS = new Set(["a", "an", "the", "is", "are", "was", "were", "to", "of", "in", "on", "at", "it", "we", "you", "i", "do", "be", "and", "or", "but", "for", "not", "so", "if", "by", "up"]);
+  const userWords = userNorm.replace(/[.,!?;:'"()]/g, '').split(' ').filter(w => w && !STOP_WORDS.has(w));
+
+  let bestScore = 0;
+  let bestAlt = alternatives[0];
+
+  for (const alt of alternatives) {
+    const altNorm = normalizeAnswer(alt);
+    const altWords = altNorm.replace(/[.,!?;:'"()]/g, '').split(' ').filter(w => w && !STOP_WORDS.has(w));
+    if (altWords.length === 0) continue;
+
+    let matched = 0;
+    const usedIndices = new Set();
+    for (const aw of altWords) {
+      let bestDist = Infinity;
+      let bestIdx = -1;
+      for (let i = 0; i < userWords.length; i++) {
+        if (usedIndices.has(i)) continue;
+        const d = levenshtein(aw, userWords[i]);
+        if (d < bestDist) { bestDist = d; bestIdx = i; }
+      }
+      const threshold = aw.length <= 4 ? 1 : 2;
+      if (bestDist <= threshold && bestIdx >= 0) {
+        matched++;
+        usedIndices.add(bestIdx);
+      }
+    }
+    const score = matched / altWords.length;
+    if (score > bestScore) { bestScore = score; bestAlt = alt; }
+  }
+
+  return { score: bestScore, accepted: bestAlt };
 }
 
 function showWriteQuestion() {
@@ -1326,7 +1464,7 @@ function submitWriteAnswer() {
   document.getElementById('writeSubmitBtn').disabled = true;
 
   const item = currentData[currentIndex];
-  const result = checkWriteAnswer(userAnswer, item.en);
+  const result = checkWriteAnswer(userAnswer, item.en, item);
 
   const feedback = document.getElementById('writeFeedback');
   feedback.classList.remove('hidden');
