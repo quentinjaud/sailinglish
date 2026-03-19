@@ -17,6 +17,7 @@ Sailinglish est une app web d'apprentissage du vocabulaire nautique anglais, pen
 - **Flashcards** : retourne la carte, auto-révision des termes non maîtrisés
 - **Match** : associe les paires français-anglais par groupes de 6
 - **Écriture** : tape la traduction anglaise de mémoire (fuzzy matching, tolérance typos)
+- **Phrases** : traduis des consignes de mono complètes (31 phrases, matching par mots-clés + fuzzy mot-à-mot)
 - **Révision du jour** : session automatique avec les termes à revoir (SRS)
 
 ### Apprentissage

@@ -36,5 +36,5 @@
 
 ## 7. Contenu
 - [ ] **Import/export de vocabulaire** : permettre d'ajouter ses propres termes
-- [ ] **Phrases en contexte** : exemples d'utilisation pour chaque terme
+- [x] **Phrases en contexte** : 31 consignes de mono à traduire, matching intelligent (mots-clés + fuzzy mot-à-mot)
 - [ ] **Images illustratives** : schéma du bateau avec les termes annotés
