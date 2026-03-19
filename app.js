@@ -210,6 +210,8 @@ const DATA = [
   { fr: "Largue tout !", en: "Let everything go!", cat: "commands", hint: "Lâcher toutes les écoutes (urgence)" },
 ];
 
+const MAX_QUIZ_SIZE = 20;
+
 // Category metadata
 const CATEGORIES = {
   all:        { label: "Tout",          icon: "" },
@@ -520,7 +522,7 @@ function updateMastery() {
 // ===================== GAME START =====================
 function startGame() {
   currentData = DATA.filter(d => selectedCat === 'all' || d.cat === selectedCat);
-  currentData = sortByWeakness(currentData);
+  currentData = sortByWeakness(currentData).slice(0, MAX_QUIZ_SIZE);
   launchGame(currentData);
 }
 
