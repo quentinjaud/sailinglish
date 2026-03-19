@@ -467,6 +467,9 @@ let matchSelectedFr = null;
 let matchSelectedEn = null;
 let matchPairsLeft = 0;
 
+// Write state
+let writeAnswered = false;
+
 // ===================== INIT =====================
 function initCatChips() {
   const container = document.getElementById('catChips');
@@ -560,6 +563,7 @@ function launchGame(items) {
   document.getElementById('quizArea').classList.add('hidden');
   document.getElementById('flashcardArea').classList.add('hidden');
   document.getElementById('matchArea').classList.add('hidden');
+  document.getElementById('writeArea').classList.add('hidden');
 
   updateScoreBar();
 
@@ -575,6 +579,9 @@ function launchGame(items) {
     document.getElementById('matchArea').classList.remove('hidden');
     matchRound = 0;
     startMatchRound();
+  } else if (selectedMode === 'write') {
+    document.getElementById('writeArea').classList.remove('hidden');
+    showWriteQuestion();
   }
 }
 
@@ -1234,6 +1241,140 @@ function spawnConfetti(anchorEl) {
   }
 }
 
+// ===================== WRITE MODE =====================
+function normalizeAnswer(str) {
+  return str
+    .toLowerCase()
+    .trim()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/['']/g, "'")
+    .replace(/\s+/g, ' ');
+}
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function checkWriteAnswer(userInput, correctEn) {
+  const userNorm = normalizeAnswer(userInput);
+  const alternatives = correctEn.split(' / ').map(s => s.trim());
+
+  for (const alt of alternatives) {
+    const altNorm = normalizeAnswer(alt);
+    if (userNorm === altNorm) return { status: 'correct', accepted: alt };
+  }
+
+  for (const alt of alternatives) {
+    const altNorm = normalizeAnswer(alt);
+    const dist = levenshtein(userNorm, altNorm);
+    const maxDist = altNorm.length <= 5 ? 1 : 2;
+    if (dist <= maxDist) return { status: 'almost', accepted: alt };
+  }
+
+  return { status: 'wrong' };
+}
+
+function showWriteQuestion() {
+  if (currentIndex >= currentData.length) { endGame(); return; }
+
+  writeAnswered = false;
+  const item = currentData[currentIndex];
+
+  document.getElementById('writeQuestionText').textContent = item.fr;
+  const hintEl = document.getElementById('writeQuestionHint');
+  if (item.hint) {
+    hintEl.textContent = item.hint;
+    hintEl.classList.remove('hidden');
+  } else {
+    hintEl.classList.add('hidden');
+  }
+
+  const input = document.getElementById('writeInput');
+  input.value = '';
+  input.disabled = false;
+  input.className = 'write-input';
+  input.focus();
+
+  document.getElementById('writeSubmitBtn').disabled = false;
+  document.getElementById('writeFeedback').classList.add('hidden');
+  document.getElementById('writeFeedback').className = 'write-feedback hidden';
+  document.getElementById('writeNextBtn').classList.add('hidden');
+  document.getElementById('writeProgress').textContent =
+    `${currentIndex + 1} / ${currentData.length}`;
+}
+
+function submitWriteAnswer() {
+  if (writeAnswered) return;
+
+  const input = document.getElementById('writeInput');
+  const userAnswer = input.value.trim();
+  if (!userAnswer) return;
+
+  writeAnswered = true;
+  input.disabled = true;
+  document.getElementById('writeSubmitBtn').disabled = true;
+
+  const item = currentData[currentIndex];
+  const result = checkWriteAnswer(userAnswer, item.en);
+
+  const feedback = document.getElementById('writeFeedback');
+  feedback.classList.remove('hidden');
+
+  if (result.status === 'correct') {
+    goodCount++;
+    input.classList.add('correct');
+    feedback.className = 'write-feedback correct';
+    feedback.textContent = 'Correct !';
+    spawnConfetti(input);
+    recordAnswer(item.fr, true);
+  } else if (result.status === 'almost') {
+    goodCount++;
+    input.classList.add('almost');
+    feedback.className = 'write-feedback almost';
+    feedback.textContent = `Presque ! Tu as écrit « ${userAnswer} », la réponse exacte est « ${result.accepted} »`;
+    recordAnswer(item.fr, true);
+  } else {
+    badCount++;
+    input.classList.add('wrong');
+    feedback.className = 'write-feedback wrong';
+    feedback.textContent = `La bonne réponse : ${item.en}`;
+    const qCard = document.getElementById('writeQuestionCard');
+    qCard.classList.add('shake');
+    setTimeout(() => qCard.classList.remove('shake'), 400);
+    recordAnswer(item.fr, false);
+  }
+
+  currentIndex++;
+  updateScoreBar();
+  document.getElementById('writeNextBtn').classList.remove('hidden');
+}
+
+function nextWriteQuestion() {
+  showWriteQuestion();
+}
+
+function handleWriteKeys(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    if (!writeAnswered) {
+      submitWriteAnswer();
+    } else {
+      nextWriteQuestion();
+    }
+  }
+}
+
 // ===================== KEYBOARD SHORTCUTS =====================
 document.addEventListener('keydown', handleKeyboard);
 
@@ -1248,6 +1389,10 @@ function handleKeyboard(e) {
   // Flashcard mode
   else if (!document.getElementById('flashcardArea').classList.contains('hidden')) {
     handleFlashcardKeys(e);
+  }
+  // Write mode
+  else if (!document.getElementById('writeArea').classList.contains('hidden')) {
+    handleWriteKeys(e);
   }
 }
 

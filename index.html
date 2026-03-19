@@ -38,6 +38,7 @@
         <button class="btn" data-mode="quiz" onclick="selectMode('quiz')">Quiz</button>
         <button class="btn" data-mode="flashcard" onclick="selectMode('flashcard')">Flashcards</button>
         <button class="btn" data-mode="match" onclick="selectMode('match')">Match</button>
+        <button class="btn" data-mode="write" onclick="selectMode('write')">Écriture</button>
       </div>
     </div>
     <div class="menu-section">
@@ -192,6 +193,22 @@
         <div class="match-col" id="matchColFr"></div>
         <div class="match-col" id="matchColEn"></div>
       </div>
+    </div>
+
+    <!-- Write mode -->
+    <div id="writeArea" class="write-area hidden">
+      <div class="question-card" id="writeQuestionCard">
+        <div class="question-label">Comment dit-on en anglais :</div>
+        <div class="question-text" id="writeQuestionText"></div>
+        <div class="question-hint hidden" id="writeQuestionHint"></div>
+      </div>
+      <div class="write-input-row">
+        <input type="text" id="writeInput" class="write-input" placeholder="Tape la traduction..." autocomplete="off" spellcheck="false">
+        <button class="write-submit-btn" id="writeSubmitBtn" onclick="submitWriteAnswer()">OK</button>
+      </div>
+      <div class="write-feedback hidden" id="writeFeedback"></div>
+      <button class="next-btn hidden" id="writeNextBtn" onclick="nextWriteQuestion()">Suivante</button>
+      <p class="progress-text" id="writeProgress"></p>
     </div>
   </div>
 
