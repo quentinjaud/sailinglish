@@ -1004,6 +1004,7 @@ header p {
 
 /* --- Responsive --- */
 @media (max-width: 480px) {
+  header p { display: none; }
   header h1 { font-size: 1.6rem; }
   .question-text { font-size: 1.3rem; }
   .options { grid-template-columns: 1fr; }
