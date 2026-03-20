@@ -45,6 +45,15 @@ function sanitize(name) {
   return name.replace(/[^a-zA-Z0-9_-]/g, '').substring(0, 30) || 'default';
 }
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Sailinglish running on port ${PORT}`);
+});
+
+// Graceful shutdown for Railway SIGTERM
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
 });
